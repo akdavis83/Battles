@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf8">
+    <!--
+
+    @license twgl.js Copyright (c) 2015, Gregg Tavares All Rights Reserved.
+    Available via the MIT license.
+    see: http://github.com/greggman/twgl.js for details
+
+    -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta property="og:title" content="TWGL.js - tiny" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="http://twgljs.org/examples/screenshots/tiny.png" />
+    <meta property="og:description" content="TWGL.js - tiny" />
+    <meta property="og:url" content="http://twgljs.org" />
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@greggman">
+    <meta name="twitter:creator" content="@greggman">
+    <meta name="twitter:domain" content="twgljs.org">
+    <meta name="twitter:title" content="TWGL.js - tiny">
+    <meta name="twitter:url" content="http://twgljs.org/examples/tiny.html">
+    <meta name="twitter:description" content="TWGL.js - tiny">
+    <meta name="twitter:image:src" content="http://twgljs.org/examples/screenshots/tiny.png">
+
+    <link href="/resources/images/twgljs-icon.png" rel="shortcut icon" type="image/png">
+
+    <title>Battles</title>
+    <link rel="icon" href="https://fav.farm/🔥" />
+    <style>
+      body {
+          margin: 0;
+          font-family: monospace;
+      }
+      canvas {
+          display: block;
+          width: 100vw;
+          height: 100vh;
+      }
+      #b {
+        position: absolute;
+        top: 10px;
+        width: 100%;
+        text-align: center;
+        z-index: 2;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="c"></canvas>
+    <div id="b">
+<h1>
+  Battles in scripture have a few sources. Some are from the tongue and actions, some are because of external foes in the natural, some are spiritual battles from the enemy, while others are stirred up from the Lord. Some have fought the wrong battles thinking they were taking up a righteous cause, all the while they were the enemies of God. Here are a few scriptures for spiritual insight into this issue:
+</h1>
+
+<h2>External:</h2>
+<h3>
+  (2 Kings 5:7) And it came to pass, when the king of Israel had read the letter, that he rent his clothes, and said, Am I God, to kill and to make alive, that this man doth send unto me to recover a man of his leprosy? wherefore consider, I pray you, and see how he seeketh a quarrel against me.
+</h3>
+
+<h2>Internal:</h2>
+<h3>
+  (James 4:1-9) 1 From whence come wars and fightings among you? come they not hence, even of your lusts that war in your members? 2 Ye lust, and have not: ye kill, and desire to have, and cannot obtain: ye fight and war, yet ye have not, because ye ask not. 3 Ye ask, and receive not, because ye ask amiss, that ye may consume it upon your lusts. 4 Ye adulterers and adulteresses, know ye not that the friendship of the world is enmity with God? whosoever therefore will be a friend of the world is the enemy of God. 5 Do ye think that the scripture saith in vain, The spirit that dwelleth in us lusteth to envy? 6 But he giveth more grace. Wherefore he saith, God resisteth the proud, but giveth grace unto the humble. 7 Submit yourselves therefore to God. Resist the devil, and he will flee from you. 8 Draw nigh to God, and he will draw nigh to you. Cleanse your hands, ye sinners; and purify your hearts, ye double minded. 9 Be afflicted, and mourn, and weep: let your laughter be turned to mourning, and your joy to heaviness.
+</h3>
+
+<h2>Demonic:</h2>
+<h3>
+  (1 Kings 21:25-26) 25 But there was none like unto Ahab, which did sell himself to work wickedness in the sight of the LORD, whom Jezebel his wife stirred up. 26 And he did very abominably in following idols, according to all things as did the Amorites, whom the LORD cast out before the children of Israel.
+</h3>
+
+<h2>Heavenly:</h2>
+<h3>
+  (1 Kings 11:14) And the LORD stirred up an adversary unto Solomon, Hadad the Edomite: he was of the king’s seed in Edom.
+</h3>
+
+    </div>
+  </body>
+  <script id="vs" type="notjs">
+attribute vec4 position;
+
+void main() {
+  gl_Position = position;
+}
+  </script>
+  <script id="fs" type="notjs">
+precision mediump float;
+
+uniform vec2 resolution;
+uniform float time;
+
+void main() {
+  vec2 uv = gl_FragCoord.xy / resolution;
+  float color = 0.0;
+  // lifted from glslsandbox.com
+  color += sin( uv.x * cos( time / 3.0 ) * 60.0 ) + cos( uv.y * cos( time / 2.80 ) * 10.0 );
+  color += sin( uv.y * sin( time / 2.0 ) * 40.0 ) + cos( uv.x * sin( time / 1.70 ) * 40.0 );
+  color += sin( uv.x * sin( time / 1.0 ) * 10.0 ) + sin( uv.y * sin( time / 3.50 ) * 80.0 );
+  color *= sin( time / 10.0 ) * 0.5;
+
+  gl_FragColor = vec4( vec3( color * 0.5, sin( color + time / 2.5 ) * 0.75, color ), 1.0 );
+}
+  </script>
+  <script src="../dist/3.x/twgl.min.js"></script>
+  <script>
+    "use strict";
+    var gl = twgl.getWebGLContext(document.getElementById("c"));
+    var programInfo = twgl.createProgramInfo(gl, ["vs", "fs"]);
+
+    var arrays = {
+      position: [-1, -1, 0, 1, -1, 0, -1, 1, 0, -1, 1, 0, 1, -1, 0, 1, 1, 0],
+    };
+    var bufferInfo = twgl.createBufferInfoFromArrays(gl, arrays);
+
+    function render(time) {
+      twgl.resizeCanvasToDisplaySize(gl.canvas);
+      gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+
+      var uniforms = {
+        time: time * 0.001,
+        resolution: [gl.canvas.width, gl.canvas.height],
+      };
+
+      gl.useProgram(programInfo.program);
+      twgl.setBuffersAndAttributes(gl, programInfo, bufferInfo);
+      twgl.setUniforms(programInfo, uniforms);
+      twgl.drawBufferInfo(gl, bufferInfo);
+
+      requestAnimationFrame(render);
+    }
+    requestAnimationFrame(render);
+  </script>
+</html>
+
+
